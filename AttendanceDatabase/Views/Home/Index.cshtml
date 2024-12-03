@@ -1,0 +1,30 @@
+﻿@model AttendanceDatabase.Models.Account
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div>
+        Enter login info below
+    </div>
+    <p style="color:#FF0000" ;>@ViewBag.message</p>
+    <form asp-controller="Menus" asp-action="MainMenu" method="post">
+        <p>
+            <label asp-for="Username">Username:</label>
+            <input asp-for="Username" />
+        </p>
+        <p>
+            <label asp-for="Password">Password:</label>
+            <input asp-for="Password" />
+        </p>
+
+        <button type="submit">Login</button>
+    </form>
+
+</body>
+</html> 

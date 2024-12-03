@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Edit Attendance Data";
+    var entryDate = (DateTime)ViewBag.EntryDate;
+    var events = ViewBag.Events as List<AttendanceDatabase.Models.EventAttendanceRecord>;
+}
+
+<h1>Edit Attendance Data - @entryDate.ToString("MMMM dd, yyyy")</h1>
+
+<form id="editAttendanceForm" asp-action="UpdateAttendance" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="entryDate" value="@entryDate.ToString("yyyy-MM-dd")" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>Current Attendance</th>
+                <th class="text-center">Flagged</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (events != null && events.Any())
+            {
+                for (int i = 0; i < events.Count; i++)
+                {
+                    var eventRecord = events[i];
+                    <tr>
+                        <td>@eventRecord.EventName</td>
+                        <td>
+                            <div class="input-group">
+                                <button type="button" class="btn-plus" onclick="this.nextElementSibling.value = parseInt(this.nextElementSibling.value) + 1;">+</button>
+                                <input type="number" name="attendanceCounts[@i]" value="@eventRecord.AttendanceCount" min="0" class="number-input" required />
+                                <button type="button" class="btn-minus" onclick="this.previousElementSibling.value = Math.max(0, parseInt(this.previousElementSibling.value) - 1);">-</button>
+                                <input type="hidden" name="eventIds[@i]" value="@eventRecord.Id" />
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <input type="checkbox" name="flaggedEvents" value="@eventRecord.Id" @(eventRecord.IsFlagged ? "checked" : "") />
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No events available for the selected date.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button type="submit" class="btn btn-success">Update Attendance</button>
+    </div>
+</form>
+
+<script>
+    document.getElementById('editAttendanceForm').addEventListener('submit', function (event) {
+        const confirmation = confirm("Are you sure you want to update the attendance?");
+        if (!confirmation) {
+            event.preventDefault(); // Prevent form submission if user cancels
+        }
+    });
+</script>

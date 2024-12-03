@@ -1,0 +1,44 @@
+﻿@{
+    string successMessage = TempData["SuccessMessage"] as string;
+}
+
+<h1>Welcome to LIVE Attendance Management</h1>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div id="successMessage" style="padding: 10px; background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; margin-bottom: 15px; border-radius: 5px;">
+        <strong>Success:</strong> @successMessage
+    </div>
+    <script>
+        setTimeout(function () {
+            var messageBox = document.getElementById('successMessage');
+            if (messageBox) {
+                messageBox.style.display = 'none';
+            }
+        }, 3000); // Hide after 3 seconds
+    </script>
+}
+
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("DataEntryMenu", "Menus")'">Data Entry</button>
+</div>
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("EventCreator", "Events")'">Create Event</button>
+</div>
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("RP_ViewCategories", "Form")'">View Categories</button>
+</div>
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("ManageAccounts", "Account")'">Manage Accounts</button>
+</div>
+<form method="post" asp-controller="Form" asp-action="RP_ViewPastCategories">
+    <div>
+        <button type="submit" class="RP_indexBtns">Generate Report</button>
+    </div>
+    <input type="hidden" name="startDate" value="@ViewBag.StartDate" />
+    <input type="hidden" name="endDate" value="@ViewBag.EndDate" />
+    <input type="hidden" name="categoryTag" value="@ViewBag.CategoryTag" />
+    <input type="hidden" name="events" value="@ViewBag.Events" />
+    <input type="hidden" name="programs" value="@ViewBag.Programs" />
+    <input type="hidden" name="cafes" value="@ViewBag.Cafes" />
+</form>

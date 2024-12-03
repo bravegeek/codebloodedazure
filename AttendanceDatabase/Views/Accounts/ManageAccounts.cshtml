@@ -1,0 +1,45 @@
+﻿@model IEnumerable<AttendanceDatabase.Models.Account>
+
+@{
+    ViewData["Title"] = "ManageAccounts";
+}
+
+<h1>ManageAccounts</h1>
+
+<p>
+    <a asp-controller="Account" asp-action="Create">Create New</a>
+</p>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Username)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Password)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().FirstName)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().role)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Username)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Password)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.role)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No accounts available.</p>
+}

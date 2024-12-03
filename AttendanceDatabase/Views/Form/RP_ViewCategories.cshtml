@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "View Categories";
+}
+
+@model List<EventAttendanceRecord>
+
+<form>
+    <button type="submit" class="RP_backBtn" asp-controller="Menus" asp-action="MainMenu">Back</button>
+</form>
+<div>
+    <h1 class="text-center">Categories</h1>
+    <br />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Category Date</th>
+                <th>Category Tags</th>
+                <th>Event</th>
+                <th>Program</th>
+                <th>Cafe</th>
+                <th>Attendance Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var category in Model)
+                {
+                    <tr>
+                        <td>@category.EventName</td>
+                        <td>@category.Date</td>
+                        <td>@category.Tags</td>
+                        <td>@category.Event</td>
+                        <td>@category.Program</td>
+                        <td>@category.Cafe</td>
+                        <td>@category.AttendanceCount</td>
+                        <td>
+                            <a asp-controller="Form" asp-action="EditCategoryForm" asp-route-id="@category.Id">Edit</a>
+                            <a asp-controller="Form" asp-action="DeleteCategory" asp-route-id="@category.Id">Delete</a>
+                        </td>
+                    </tr>
+
+                }
+            }
+        </tbody>
+    </table>
+</div>
+

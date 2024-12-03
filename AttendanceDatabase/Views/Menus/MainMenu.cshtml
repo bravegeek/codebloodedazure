@@ -1,0 +1,25 @@
+﻿<h1>Welcome to LIVE Attendance Management</h1>
+
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("DataEntryMenu", "Menus")'">Data Entry</button>
+</div>
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("EventCreator", "Events")'">Create Event</button>
+</div>
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("RP_ViewCategories", "Form")'">View Categories</button>
+</div>
+<div>
+    <button class="RP_indexBtns" onclick="location.href='@Url.Action("ManageAccounts", "Account")'">Manage Accounts</button>
+</div>
+<form method="post" asp-controller="Form" asp-action="RP_ViewPastCategories">
+    <div>
+        <button type="submit" class="RP_indexBtns">Generate Report</button>
+    </div>
+    <input type="hidden" name="startDate" value="@ViewBag.StartDate" />
+    <input type="hidden" name="endDate" value="@ViewBag.EndDate" />
+    <input type="hidden" name="categoryTag" value="@ViewBag.CategoryTag" />
+    <input type="hidden" name="events" value="@ViewBag.Events" />
+    <input type="hidden" name="programs" value="@ViewBag.Programs" />
+    <input type="hidden" name="cafes" value="@ViewBag.Cafes" />
+</form>

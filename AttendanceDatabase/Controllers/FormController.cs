@@ -156,7 +156,14 @@ namespace AttendanceDatabase.Controllers
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    //return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                    stream.Seek(0, SeekOrigin.Begin);  // Ensure we're at the start of the stream
+
+                    // Convert the MemoryStream to a byte array
+                    byte[] fileBytes = stream.ToArray();
+
+                    // Return the file to the client with appropriate headers
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{fileName}.xlsx");
                 }
             }
         }

@@ -9,7 +9,6 @@ COPY . .
 RUN dotnet restore -a $TARGETARCH
 
 # copy and publish app and libraries
-# COPY AttendanceDatabase/. .
 RUN dotnet publish -a $TARGETARCH --no-restore -o /app
 
 
@@ -26,11 +25,11 @@ ENTRYPOINT ["./AttendanceDatabase"]
 # how to use this:
 
 # build image using dockerfile
-#> docker build -t moca-image -f Dockerfile .
+#> docker build -t mocajax-image -f Dockerfile .
 
 # run the image and listen on localhost:8384
-#> docker run -it --rm -p 5000:5000 --name moca-container moca-image
+#> docker run -it --rm -p 5000:5000 --name mocajax-container mocajax-image
 
 
 # explicitly create container from the image (this is clunky)
-#> docker create --name moca-container moca-image
+#> docker create --name mocajax-container mocajax-image

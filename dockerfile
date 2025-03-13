@@ -14,7 +14,7 @@ RUN dotnet publish -a $TARGETARCH --no-restore -o /app
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
-EXPOSE 5000
+EXPOSE 8080
 WORKDIR /app
 COPY --from=build /app .
 USER $APP_UID
@@ -28,7 +28,7 @@ ENTRYPOINT ["./AttendanceDatabase"]
 #> docker build -t mocajax-image -f Dockerfile .
 
 # run the image and listen on localhost:8384
-#> docker run -it --rm -p 5000:5000 --name mocajax-container mocajax-image
+#> docker run -it --rm -p 5000:8080 --name mocajax-container mocajax-image
 
 
 # explicitly create container from the image (this is clunky)

@@ -16,21 +16,10 @@ managedIdentityName=mocajaxghactionid
 # same as workflow
 dockerImageName=moca-image
 # same as dockerfile
-dockerPort=5000
-
+dockerPort=8080
 
 # set default region and rg
 az config set defaults.location=$region defaults.group=$rgName
-
-
-# under development
-
-
-  
-# Create a server without SQL Admin, with AD admin, AD Only enabled, User ManagedIdenties and Identity Type is SystemAssigned,UserAssigned.
-# az sql server create --enable-ad-only-auth --external-admin-principal-type User --external-admin-name myUserName \ --external-admin-sid c5e964e2-6bb2-1111-1111-3b16ec0e1234 -g myResourceGroup -n myServer -i \ --user-assigned-identity-id /subscriptions/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testumi \ --identity-type SystemAssigned,UserAssigned --pid /subscriptions/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testumi
-
-
 
 
 ########################################
@@ -72,21 +61,24 @@ appSvcId=$(az webapp show --resource-group $rgName --name $appSvcName --query id
 
 
 ########################################
-########################################
-########################################
 # create the sql server
 ########################################
-sqlServerName=mocajaxsqlserver
-sqlDbName=mocajaxdb
+sqlServerName=mocajaxSqlServer
+sqlDbName=mocajaxSqlDb
+sqlAdminGroupName=mocajaxSqlAdminGroup
+
+# concat a sql admin user using the sql server name
+sqlAdminUserName=${sqlServerName}AdminUser
 
 # User Id and Name required to create AD admin sql server
-sqlAdminUserId=32a8f43c-8fd0-4efa-9864-2041ca0bad72
-sqlAdminUserName=gregread_outlook.com#EXT#@gregreadoutlook.onmicrosoft.com
+sqlAdminUserId=$(az ad user create \
+  --display-name $sqlAdminUserName \
+  --password $(uuidgen) \
+  --user-principal-name ${sqlAdminUserName}.com#EXT#@gregreadoutlook.onmicrosoft.com \
+  --query id \
+  --output tsv)
 
-sqlAdminGroupName=mocajaxsqladmingroup
-
-# Create a server without SQL Admin, with AD admin and AD Only enabled.
-# az sql server create --enable-ad-only-auth --external-admin-principal-type User --external-admin-name myUserName --external-admin-sid c5e964e2-6bb2-1111-1111-3b16ec0e1234 -g myResourceGroup -n myServer
+# Create a server with AD admin and AD Only enabled.
 az sql server create \
   --enable-ad-only-auth \
   --external-admin-principal-type User \
@@ -96,8 +88,7 @@ az sql server create \
   -n $sqlServerName \
   -l $region
 
-
-########################################
+# Create the sql Db
 az sql db create \
   -g $rgName \
   -s $sqlServerName \
@@ -109,20 +100,39 @@ az sql db create \
   --use-free-limit \
   --free-limit-exhaustion-behavior AutoPause
 
+# create a connection between the webapp and SQL server
+az webapp connection create sql \
+  -g $rgName \
+  -n $appSvcName \
+  --target-resource-group $rgName \
+  --server $sqlServerName \
+  --database $sqlDbName \
+  --system-identity \
+  --client-type dotnet
 
-# Grant the Web App's System Managed Identity
-# permission to access the container registry
-groupId=$(az ad group create \
-  --display-name $sqlAdminGroupName \
-  --mail-nickname $sqlAdminGroupName \
-  --query id \
-  --output tsv)
+
+
+########################################
+# link AD group to SQL admins
+########################################
+
+# # Create an AD group for SQL admins
+# sqlAdminGroupId=$(az ad group create \
+#   --display-name $sqlAdminGroupName \
+#   --mail-nickname $sqlAdminGroupName \
+#   --query id \
+#   --output tsv)
+
+
+###
+### Don't do this, the webserver gets a different connection ###
+###
+# add the web app System Managed Identity to the SQL admin group
+# az ad group member add --group $sqlAdminGroupId --member-id $appSvcPrincipaId
+
 
 # az ad group show --group $sqlAdminGroupName
-
-# $msiobjectid=(az webapp identity show --resource-group myResourceGroup --name <app-name> --query principalId --output tsv)
-az ad group member add --group $groupId --member-id $appSvcPrincipaId
-az ad group member list -g $groupId
+#az ad group member list -g $sqlAdminGroupId
 
 
 
@@ -228,4 +238,4 @@ az appservice plan delete --name $appSvcPlanName --yes
 az acr delete --name $acrName --yes
 # deletes the user managed identity
 az ad app delete --id $appId
-az ad group delete --id $groupId
+az ad group delete --id $sqlAdminGroupId

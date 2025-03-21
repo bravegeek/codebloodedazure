@@ -194,14 +194,17 @@ az role assignment create \
 az ad app federated-credential create \
   --id $appId \
   --parameters '{\
-      "name": "credName",\
+      "name": "mocajaxCred",\
       "issuer": "https://token.actions.githubusercontent.com",\
-      "subject": "repo:bravegeek/AttendanceDatabase:ref:refs/heads/main",\
+      "subject": "repo:bravegeek/codebloodedazure:ref:refs/heads/feature/improve-workflow",\
       "description": "Testing",\
       "audiences": [\
           "api://AzureADTokenExchange"\
       ]\
     }'
+
+# to remove the federated credential
+# az ad app federated-credential delete --id $appId --federated-credential-id mocajaxCred
 
 
 ########################################

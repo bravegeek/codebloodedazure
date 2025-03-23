@@ -7,10 +7,12 @@
 # set region, resource group, az container registry
 region=centralus
 rgName=code-blooded
-
-acrName=mocajaxacr
+sqlServerName=mocajaxSqlServer
+sqlDbName=mocajaxSqlDb
+sqlAdminUserName=${sqlServerName}AdminUser
 appSvcName=mocajaxappsvc
 appSvcPlanName=mocajaxappsvcplan
+acrName=mocajaxacr
 managedIdentityName=mocajaxghactionid
 
 # same as workflow
@@ -20,6 +22,42 @@ dockerPort=8080
 
 # set default region and rg
 az config set defaults.location=$region defaults.group=$rgName
+
+
+########################################
+# create the sql server with AD admin
+########################################
+
+# User Id and Name required to create AD admin sql server
+# password doesn't matter, so we use a uuid
+sqlAdminUserId=$(az ad user create \
+  --display-name $sqlAdminUserName \
+  --password $(uuidgen) \
+  --user-principal-name ${sqlAdminUserName}.com#EXT#@gregreadoutlook.onmicrosoft.com \
+  --query id \
+  --output tsv)
+
+# Create a server with AD admin and AD Only enabled.
+az sql server create \
+  --enable-ad-only-auth \
+  --external-admin-principal-type User \
+  --external-admin-name $sqlAdminUserName \
+  --external-admin-sid $sqlAdminUserId \
+  -g $rgName \
+  -n $sqlServerName \
+  -l $region
+
+# Create the sql Db
+az sql db create \
+  -g $rgName \
+  -s $sqlServerName \
+  -n $sqlDbName \
+  -e GeneralPurpose \
+  -f Gen5 \
+  -c 2 \
+  --compute-model Serverless \
+  --use-free-limit \
+  --free-limit-exhaustion-behavior AutoPause
 
 
 ########################################
@@ -50,57 +88,22 @@ az webapp config appsettings set \
   --name $appSvcName \
   --settings "WEBSITES_PORT=$dockerPort" 
 
-# Get the principalId of the System Managed Identity
+# Get the principalId of the webapp's System Managed Identity
 appSvcPrincipaId=$(az webapp identity show \
     --resource-group $rgName \
     --name $appSvcName \
     --query principalId \
     --output tsv)
 
-appSvcId=$(az webapp show --resource-group $rgName --name $appSvcName --query id --output tsv)
-
-
-########################################
-# create the sql server
-########################################
-sqlServerName=mocajaxSqlServer
-sqlDbName=mocajaxSqlDb
-sqlAdminGroupName=mocajaxSqlAdminGroup
-
-# concat a sql admin user using the sql server name
-sqlAdminUserName=${sqlServerName}AdminUser
-
-# User Id and Name required to create AD admin sql server
-sqlAdminUserId=$(az ad user create \
-  --display-name $sqlAdminUserName \
-  --password $(uuidgen) \
-  --user-principal-name ${sqlAdminUserName}.com#EXT#@gregreadoutlook.onmicrosoft.com \
+# Get the webapp id
+appSvcId=$(az webapp show \
+  --resource-group $rgName \
+  --name $appSvcName \
   --query id \
   --output tsv)
 
-# Create a server with AD admin and AD Only enabled.
-az sql server create \
-  --enable-ad-only-auth \
-  --external-admin-principal-type User \
-  --external-admin-name $sqlAdminUserName \
-  --external-admin-sid $sqlAdminUserId \
-  -g $rgName \
-  -n $sqlServerName \
-  -l $region
-
-# Create the sql Db
-az sql db create \
-  -g $rgName \
-  -s $sqlServerName \
-  -n $sqlDbName \
-  -e GeneralPurpose \
-  -f Gen5 \
-  -c 2 \
-  --compute-model Serverless \
-  --use-free-limit \
-  --free-limit-exhaustion-behavior AutoPause
-
 # create a connection between the webapp and SQL server
+# https://learn.microsoft.com/en-us/azure/app-service/tutorial-connect-msi-azure-database?tabs=sqldatabase-sc%2Csystemassigned-sc%2Cdotnet%2Cdotnet-mysql-mi%2Cdotnet-postgres-mi%2Ccli#2-create-a-passwordless-connection
 az webapp connection create sql \
   -g $rgName \
   -n $appSvcName \
@@ -109,31 +112,6 @@ az webapp connection create sql \
   --database $sqlDbName \
   --system-identity \
   --client-type dotnet
-
-
-
-########################################
-# link AD group to SQL admins
-########################################
-
-# # Create an AD group for SQL admins
-# sqlAdminGroupId=$(az ad group create \
-#   --display-name $sqlAdminGroupName \
-#   --mail-nickname $sqlAdminGroupName \
-#   --query id \
-#   --output tsv)
-
-
-###
-### Don't do this, the webserver gets a different connection ###
-###
-# add the web app System Managed Identity to the SQL admin group
-# az ad group member add --group $sqlAdminGroupId --member-id $appSvcPrincipaId
-
-
-# az ad group show --group $sqlAdminGroupName
-#az ad group member list -g $sqlAdminGroupId
-
 
 
 ########################################
@@ -236,9 +214,9 @@ echo $AZURE_TENANT_ID
 # Run these in the same cmd shell and it will reuse the vars
 ###############
 
-az webapp delete --name $appSvcName
-az appservice plan delete --name $appSvcPlanName --yes
-az acr delete --name $acrName --yes
-# deletes the user managed identity
-az ad app delete --id $appId
-az ad group delete --id $sqlAdminGroupId
+# az webapp delete --name $appSvcName
+# az appservice plan delete --name $appSvcPlanName --yes
+# az acr delete --name $acrName --yes
+# # deletes the user managed identity
+# az ad app delete --id $appId
+# az ad group delete --id $sqlAdminGroupId

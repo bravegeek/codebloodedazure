@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddDbContext<AttendanceDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
+        Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING"),
         sqlOptions => sqlOptions.EnableRetryOnFailure()));
+//         builder.Configuration.GetConnectionString("DefaultConnection"),
+//         sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
 // Add support for controllers and views
 builder.Services.AddControllersWithViews();

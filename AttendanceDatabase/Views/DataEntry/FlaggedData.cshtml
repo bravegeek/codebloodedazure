@@ -1,0 +1,52 @@
+﻿@model AttendanceDatabase.Models.FlaggedDataViewModel
+
+@{
+    ViewData["Title"] = "Flagged Data";
+}
+
+@*     <form>
+        <button type="submit" class="RP_backBtn" asp-controller="Form" asp-action="RP_Index">Back</button>
+    </form> *@
+
+<h1>Flagged Categories</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category Name</th>
+            <th>Date</th>
+            <th>Total Attendance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model.Categories)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>@category.Date.ToShortDateString()</td>
+                <td>@category.TotAttn</td>
+                <td>
+                    <!-- Form with hidden input to submit the date for the category -->
+                    <form asp-action="DataEntry" method="post">
+                        <input type="hidden" name="date" value="@category.Date.ToString("yyyy-MM-dd")" />
+                        <button type="submit" class="Blue_Btn">Go to Date</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<div class="pagination">
+    @if (Model.CurrentPage > 1)
+    {
+        <a href="@Url.Action("FlaggedData", "DataEntry", new { page = Model.CurrentPage - 1 })" class="btn btn-link">Previous</a>
+    }
+
+    @if (Model.CurrentPage < Model.TotalPages)
+    {
+        <a href="@Url.Action("FlaggedData", "DataEntry", new { page = Model.CurrentPage + 1 })" class="btn btn-link">Next</a>
+    }
+</div>

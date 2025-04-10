@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 namespace AttendanceDatabase.Models
 {
     public class Account
@@ -9,4 +10,7 @@ namespace AttendanceDatabase.Models
         public string FirstName { get; set; }
         public string role { get; set; }
     }
-}
+
+    
+    }
+

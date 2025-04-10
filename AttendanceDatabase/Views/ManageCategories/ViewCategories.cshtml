@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "View Categories";
+}
+
+@model List<Category>
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="RP_ViewForm">
+
+    <h1 class="text-center">Categories</h1>
+
+    <div>
+
+        <form>
+            <button type="submit" class="RP_AddNew" asp-controller="Form" asp-action="CreateCategory"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+        </form>
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Category Date</th>
+                    <th>Category Tags</th>
+                    <th>Attendance Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    for (int i = 0; i < Model.Count(); i++)
+                    {
+                        <tr>
+                            <td>@Model[i].Name</td>
+                            <td>@Model[i].Date</td>
+                            <td>
+                                @if (Model[i].Tags != null && Model[i].Tags.Any())
+                                {
+                                    @for (int j = 0; j < Model[i].Tags.Count(); j++)
+                                    {
+                                        <span>@Model[i].Tags[j].TagName</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span>No tags attatched</span>
+                                }
+                            </td>
+
+                            <td>@Model[i].TotAttn</td>
+                            <td>
+                                <a asp-action="CreateCategory" class="Blue_Btn" asp-route-id="@Model[i].Id">Edit</a>
+                                <a asp-action="DeleteCategory" class="Red_Btn" asp-route-id="@Model[i].Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+

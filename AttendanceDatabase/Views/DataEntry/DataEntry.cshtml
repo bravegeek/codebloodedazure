@@ -1,0 +1,90 @@
+﻿@model List<Category>
+
+@{
+    ViewData["Title"] = "Enter Attendance";
+}
+
+<h1>Enter Attendance</h1>
+
+<!-- Display Selected Date -->
+<h2>Selected Date: @ViewBag.SelectedDate</h2>
+
+<form asp-action="SaveAttendance" method="post">
+    <div class="category-container">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <div class="category-box">
+                <div class="category-header">
+                    <button type="button" class="toggle-btn" onclick="toggleCategory(@i)">
+                        ➕
+                    </button>
+                    <h3>@Model[i].Name</h3>
+
+                    <label class="flag-checkbox">
+                        <input type="checkbox" asp-for="@Model[i].Flagged" />
+                        <span>Flagged</span>
+                    </label>
+                </div>
+
+                <div class="category-details" id="category-@i">
+                    <input type="hidden" asp-for="@Model[i].Id" />
+
+                    <table class="category-table">
+                        <thead>
+                            <tr>
+                                <th>Tag Name</th>
+                                <th>Attendance Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int j = 0; j < Model[i].Tags.Count(); j++)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="hidden" asp-for="@Model[i].Tags[j].Id" />
+                                        @Model[i].Tags[j].TagName
+                                    </td>
+                                    <td>
+                                        <input asp-for="@Model[i].Tags[j].AttnCnt" type="number" min="0" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+
+    <input type="submit" class="RP_filterBtn" value="Save Data" />
+</form>
+
+<style>
+    .toggle-btn {
+        font-size: 2.5rem; /* Bigger plus/minus */
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+    }
+
+    .category-details {
+        display: none; /* Ensure it's hidden initially */
+    }
+</style>
+
+<script>
+    function toggleCategory(index) {
+        var details = document.getElementById('category-' + index);
+        var btn = event.target;
+
+        // Use computed style to handle cases where style.display isn't explicitly set
+        var currentDisplay = window.getComputedStyle(details).display;
+
+        if (currentDisplay === "none") {
+            details.style.display = "block";
+            btn.innerHTML = "➖";
+        } else {
+            details.style.display = "none";
+            btn.innerHTML = "➕";
+        }
+    }
+</script>

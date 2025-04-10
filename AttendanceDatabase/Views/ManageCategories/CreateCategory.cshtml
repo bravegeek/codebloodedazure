@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Add/Edit Category";
+}
+
+@model AttendanceDatabase.Models.CategoryInfo
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>
+</head>
+    <body class="RP_CreateForm">
+
+        <h1 class="text-center">Enter Category Information</h1>
+
+    <form asp-action="AddEditCategoryForm" method="post">
+        <input type="hidden" asp-for="Category.Id" />
+
+        <label for="categoryName">Category Name:</label>
+        <input type="text" asp-for="Category.Name" id="categoryName" required />
+        <br />
+
+        <label id="categoryDate" name="categoryDate">Category Date:</label>
+        <input type="date" asp-for="Category.Date" value="@Model.Category.Date.ToString("yyyy-MM-dd")" />
+        <br />
+
+        <label id="categoryTime" name="categoryTime">Category Time:</label>
+        <input type="text" id="categoryTimeInput" name="categoryTime" value="@Model.Category.Time.ToString("HH:mm")" />
+        <br />
+
+
+        <label for="tags">Select Tags</label>
+        <br />
+        <select multiple="multiple" name="tags" id="tags" class="form-control">
+            @foreach (var item in Model.Tags)
+            {
+                @if (Model.Category.Tags != null && Model.Category.Tags.Any(tag => tag.TagName == item.Name))
+                {
+                    <option value="@item.Name" selected>@item.Name</option>
+                }
+                else
+                {
+                    <option value="@item.Name">@item.Name</option>
+                }
+            }
+        </select>
+
+        <label id="categoryType" name="categoryType">Category Type:</label>
+        <input type="checkbox" asp-for="Category.Event" /> Event
+        <input type="checkbox" asp-for="Category.Program" /> Program
+        <input type="checkbox" asp-for="Category.Cafe" /> Cafe Visit
+        <br />
+
+        <!-- Hidden inputs to ensure unchecked checkboxes send false -->
+        <input type="hidden" name="Category.Event" value="false" />
+        <input type="hidden" name="Category.Program" value="false" />
+        <input type="hidden" name="Category.Cafe" value="false" />
+        <br />
+
+        <button type="submit" class="RP_filterBtn">
+            @if (Model.Category.Id == 0)
+            {
+                <text>Submit</text>
+            }
+            else
+            {
+                <text>Update</text>
+            }
+        </button>
+    </form>
+
+        <script>$(document).ready(function () {
+                $('#tags').multiselect({
+                    nonSelectedText: 'Select Tags',
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true,
+                    buttonWidth: '100%'
+                });
+            });</script>
+    </body>
+</html>
+

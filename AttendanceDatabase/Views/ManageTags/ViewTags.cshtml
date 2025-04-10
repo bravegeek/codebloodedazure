@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "View Tags";
+}
+
+@model List<Tags>
+@{
+    var tagUsage = ViewBag.TagUsage as Dictionary<int, bool>;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="RP_ViewForm">
+    <h1 class="text-center">Tags</h1>
+    <div>
+        <form>
+            <button type="submit" class="RP_AddNew" asp-controller="Form" asp-action="RP_CreateTags"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+        </form>
+
+        <br />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tag Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tag in Model)
+
+
+
+                {
+                    <tr>
+                        <td>@tag.Name</td>
+                        <td>
+                            <a asp-action="EditTags" asp-route-id="@tag.Id" class="Blue_Btn">Edit</a>
+                            @if (tagUsage != null && tagUsage.ContainsKey(tag.Id) && !tagUsage[tag.Id])
+
+
+
+
+
+
+
+                            {
+                                <a asp-action="DeleteTags" asp-route-id="@tag.Id" class="Red_Btn">Delete</a>
+                            }
+
+
+
+
+
+
+
+                            else
+
+
+
+
+
+
+
+                            {
+                                <span style="color: gray;">(In Use)</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+
+

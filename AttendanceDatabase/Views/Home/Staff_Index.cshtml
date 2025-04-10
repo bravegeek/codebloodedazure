@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" id="indexHtml">
+<head>
+    <h1>Welcome @ViewBag.username</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="indexBody">
+        <div class="left-div">
+            <br />
+
+            <div class="logo">
+                <img src="/imgs/MOCA-Logo.png" height="150" width="200" />
+            </div>
+
+
+            <form>
+                <button type="submit" class="RP_indexBtns" asp-controller="ManageCategories" asp-action="CreateCategory">Create Category</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="ManageCategories" asp-action="ViewCategories">View Categories</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="DataEntry" asp-action="EnterDate">Enter Daily Attendance</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="DataEntry" asp-action="FlaggedData">View Flagged Data</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="Form" asp-action="ViewPastCategories">Generate Report</button>
+                <button type="submit class="RP_indexBtns" asp-controller="Login" asp-action="LogOut">Log Out</button>
+                <button type="button" class="RP_indexBtns">Log Out</button>
+            </form>
+        </div>
+
+        <div class="right-div">
+@*             <input type="button" value="Log Out" class="logOutBtn" /> *@
+            <br />
+            <button class="btn3" style="background-image: url('@Url.Content("~/imgs/event-background.png")');"
+                    onclick="location.href='@Url.Action("ViewCategories", "ManageCategories")'">
+                <h1>@ViewBag.CategoryEventCount Category Events</h1>
+                <p class="text-end">Manage Category Events &rarr;</p>
+            </button>
+
+            <div class="block">
+                <input type="button" class="btn4" id="btn4" />
+                <div class="btn4Label">
+                    <label for="btn4" class="btnLabel">Enter Select Date Attendance</label>
+                </div>
+            </div>
+
+            <div class="block">
+                <input type="button" class="btn5" id="btn5" />
+                <div class="btn5Label">
+                    <label for="btn5" class="btnLabel">Enter Daily Attendance</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+</body>
+
+<script>
+    document.getElementById("btn4").addEventListener("click", function () {
+        window.location.href = '/DataEntry/EnterDate';
+    });
+
+    document.getElementById("btn5").addEventListener("click", function () {
+        window.location.href = '/DataEntry/EnterDate?autofill=true';
+    });
+</script>

@@ -157,7 +157,7 @@ namespace AttendanceDatabase.Controllers
                     {
                         
 
-                        Account account = _context.Accounts.SingleOrDefault(t => t.Id == itemid);
+                        Account account = _context.Accounts.Find(itemid);
                         
 
 

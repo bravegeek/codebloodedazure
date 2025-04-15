@@ -6,6 +6,33 @@
     display: flex;
 }
 
+.RP_CreateForm {
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+}
+
+.RP_CreateForm h1.text-center {
+    font-size: 1.8rem;
+    margin-left: -200px;
+    margin-top: 100px;
+    color: black;
+}
+
+and new .ViewForm and .ViewForm h1: .RP_ViewForm {
+    font-family: 'Arial', sans-serif;
+    color: black;
+}
+
+.RP_ViewForm h1 {
+    color: black;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
 .RP_categoryContainer {
     display: flex;
     width: 100%;
@@ -1118,4 +1145,5 @@ html {
         padding: 0;
         margin-top: 0;
     }
+
 

@@ -16,8 +16,9 @@
             <nav class="navbar navbar-expand-sm mb-3">
                 <div class="container-fluid">
                     <div class="navbar-collapse collapse d-sm-inline-flex ms-auto">
-                        <a class="navbar-brand" asp-controller="Form" asp-action="RP_Index"><img src="/imgs/MOCA-Logo.png" height="70" width="120" /></a>
+                        <div class="navbar-brand"><img src="/imgs/MOCA-Logo.png" height="70" width="120" />
                         <button class="icons" onclick="location.href='@Url.Action("RP_Index", "Form")'"><span class="material-symbols-outlined">home</span> </button>
+                            <button onclick="location.href='@Url.Action("LogOut", "Login")'"><span>Logout</span> </button>
                     </div>
                 </div>
             </nav>

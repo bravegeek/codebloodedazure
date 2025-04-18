@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Select Categories";
 }
-
 @model CategoryPaginationViewModel
 
 <!DOCTYPE html>
@@ -12,7 +11,7 @@
 <body class="RP_ReportBody">
     <div class="RP_categoryContainer">
         <div class="RP_categoryList">
-            <form asp-controller="Form">
+            <form asp-controller="Form" id="categoryForm">
                 <h2 class="text-center">Categories</h2>
 
                 @if (Model.Categories.Count() == 0)
@@ -39,27 +38,27 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" onclick="toggle(this)" value="Select All" /> Select All</th>
+                                    <th><input type="checkbox" id="selectAllGlobal" /> Select All</th>
                                     <th>Category Name</th>
                                     <th>Category Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @{
-                                    foreach (var category in Model.Categories)
+                                @foreach (var category in Model.Categories)
 
-                                    {
-                                        <tr>
-                                            <td><input type="checkbox" onclick="submitForm(this)" name="category" value="@category.Category.Id" />
-                                            <td>@category.Category.Name</td>
-                                            <td>@category.Category.Date.ToString("MM/dd/yyyy")</td>
-                                        </tr>
-                                    }
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="category-checkbox" value="@category.Category.Id" />
+                                        </td>
+                                        <td>@category.Category.Name</td>
+                                        <td>@category.Category.Date.ToString("MM/dd/yyyy")</td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
-                    <input type="hidden" id="selectedCategoryIdsField" name="selectedCategoryIds">
+                    <input type="hidden" id="selectedCategoryIdsField" name="selectedCategoryIds" />
                     <button type="submit" class="RP_visualRPBtn" asp-action="VisualReportPage">Generate Report</button>
                     <button type="submit" class="RP_dataBtn" asp-action="DownloadRawData">Download Data</button>
                 }
@@ -68,32 +67,32 @@
                     @if (Model.CurrentPage > 1)
 
                     {
-                        <a href="@Url.Action("RP_ViewPastCategories", new { page = Model.CurrentPage - 1 })" class="btn btn-primary">Previous</a>
+                        <a href="@Url.Action("ViewPastCategories", new { page = Model.CurrentPage - 1 })" class="RP_reportPageBtn">Previous</a>
                     }
 
                     @for (var i = 1; i <= Model.TotalPages; i++)
 
                     {
-                        <a href="@Url.Action("RP_ViewPastCategories", new { page = i })" class="btn btn-secondary @(i == Model.CurrentPage ? "active" : "")">@i</a>
+                        <a href="@Url.Action("ViewPastCategories", new { page = i })" class="RP_reportPageBtn @(i == Model.CurrentPage ? "active" : "")">@i</a>
                     }
 
                     @if (Model.CurrentPage < Model.TotalPages)
 
                     {
-                        <a href="@Url.Action("RP_ViewPastCategories", new { page = Model.CurrentPage + 1 })" class="btn btn-primary">Next</a>
+                        <a href="@Url.Action("ViewPastCategories", new { page = Model.CurrentPage + 1 })" class="RP_reportPageBtn">Next</a>
                     }
                 </div>
-
             </form>
         </div>
+
+
         <div class="RP_filterGroup">
             <div id="RP_innerFilterGroup">
                 <form asp-controller="Form" method="post">
                     <h3>Filter</h3>
                     <h6>Category Name</h6>
                     <input type="text" name="selectedName" />
-                    <br />
-                    <br />
+                    <br /><br />
                     <h6>Date</h6>
                     <label for="startDate">From:</label>
                     <input type="date" class="form-control" name="startDate" id="startDate">
@@ -105,12 +104,12 @@
                     @{
                         var uniqueTags = new HashSet<string>();
                     }
-
                     <select name="selectedTags" multiple class="form-control">
                         @foreach (var categoryInfo in Model.Categories)
 
                         {
-                            @if (categoryInfo.Tags != null && categoryInfo.Tags.Any())
+
+                            if (categoryInfo.Tags != null && categoryInfo.Tags.Any())
 
                             {
 
@@ -126,81 +125,90 @@
 
                             }
 
-                            else
-
-                            {
-                                <p>No tags available.</p>
-                            }
                         }
                     </select>
                     <br />
                     <h6>Category Type</h6>
-                    <input type="checkbox" name="events" value="true" />Event
-                    <br />
-                    <input type="checkbox" name="programs" value="true" />Program
-                    <br />
-                    <input type="checkbox" name="cafes" value="true" />Cafe Visit
-                    <br />
-                    <br />
+                    <input type="checkbox" name="events" value="true" /> Event<br />
+                    <input type="checkbox" name="programs" value="true" /> Program<br />
+                    <input type="checkbox" name="cafes" value="true" /> Cafe Visit<br /><br />
                     <button type="submit" class="RP_filterBtn" asp-action="ViewPastCategories">Submit</button>
                     <button type="submit" class="RP_filterBtn" asp-action="ViewPastCategories">Remove Filters</button>
                 </form>
             </div>
         </div>
-
     </div>
+
+
+    <script>        const LOCAL_STORAGE_KEY = 'selectedCategoryIds';
+
+        function getStoredSelections() {
+            return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
+        }
+
+        function storeSelections(selections) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(selections));
+        }
+
+        function updateHiddenField() {
+            document.getElementById('selectedCategoryIdsField').value = getStoredSelections().join(',');
+        }
+
+        function restoreCheckboxStates() {
+            const storedSelections = getStoredSelections();
+            document.querySelectorAll('.category-checkbox').forEach(cb => {
+                cb.checked = storedSelections.includes(cb.value);
+            });
+        }
+
+        function updateStoredSelection(checkbox) {
+            let stored = getStoredSelections();
+            if (checkbox.checked) {
+                if (!stored.includes(checkbox.value)) {
+                    stored.push(checkbox.value);
+                }
+            } else {
+                stored = stored.filter(id => id !== checkbox.value);
+            }
+            storeSelections(stored);
+            updateHiddenField();
+        }
+
+        function handleSelectAllChange(checkbox) {
+            const check = checkbox.checked;
+            let stored = getStoredSelections();
+            const allCheckboxes = document.querySelectorAll('.category-checkbox');
+
+            allCheckboxes.forEach(cb => {
+                cb.checked = check;
+                const id = cb.value;
+                if (check && !stored.includes(id)) {
+                    stored.push(id);
+                } else if (!check) {
+                    stored = stored.filter(storedId => storedId !== id);
+                }
+            });
+
+            storeSelections(stored);
+            updateHiddenField();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            restoreCheckboxStates();
+            updateHiddenField();
+
+            document.querySelectorAll('.category-checkbox').forEach(cb => {
+                cb.addEventListener('change', () => updateStoredSelection(cb));
+            });
+
+            const selectAllBox = document.getElementById('selectAllGlobal');
+            if (selectAllBox) {
+                selectAllBox.addEventListener('change', () => handleSelectAllChange(selectAllBox));
+            }
+
+            document.getElementById('categoryForm').addEventListener('submit', () => {
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+            });
+        });</script>
 </body>
 </html>
-
-
-<script language="JavaScript">
-    /*Function selects all checkboxes*/
-    function toggle(source) {
-        checkboxes = document.getElementsByName('category');
-        var selectedCategoryIds = [];
-
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            checkboxes[i].checked = source.checked;
-            if (checkboxes[i].checked) {
-                selectedCategoryIds.push(checkboxes[i].value);
-            }
-        }
-
-        document.getElementById('selectedCategoryIdsField').value = selectedCategoryIds.join(',');
-    }
-
-    /*Function gathers all selected checkboxes and submits the form*/
-    function submitForm() {
-        // Get all the checked checkboxes
-        var selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-
-        if (selectedCheckboxes.length === 0) {
-            alert("No items selected.");
-            return; // Exit if no checkboxes are selected
-        }
-
-        // Clear any existing hidden inputs (if the form is being resubmitted)
-        var form = document.getElementById("myForm");
-        var existingHiddenInputs = form.querySelectorAll('input[type="hidden"]');
-        existingHiddenInputs.forEach(function (input) {
-            input.remove();
-        });
-
-        // Loop through the selected checkboxes and create hidden input elements
-        selectedCheckboxes.forEach(function (checkbox) {
-            var hiddenInput = document.createElement("input");
-            hiddenInput.type = "hidden";
-            hiddenInput.name = "category";
-            hiddenInput.value = checkbox.value;
-            form.appendChild(hiddenInput);
-        });
-
-        form.submit();
-    }
-
-    /*Function submits form manually*/
-    $(".RP_submitBtn").click(function (e) {
-        e.preventDefault();
-
-        $(this).closest("form").submit();
-    });</script>

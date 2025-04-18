@@ -26,13 +26,13 @@
         <input type="date" asp-for="Category.Date" value="@Model.Category.Date.ToString("yyyy-MM-dd")" />
         <br />
 
-        <label id="categoryTime" name="categoryTime">Category Time:</label>
-        <input type="text" id="categoryTimeInput" name="categoryTime" value="@Model.Category.Time.ToString("HH:mm")" />
+        @*<label id="categoryTime" name="categoryTime">Category Time:</label>
+        <input type="text" id="categoryTimeInput" name="categoryTime" value="@Model.Category.Time.ToString("HH:mm")" />*@
         <br />
 
 
         <label for="tags">Select Tags</label>
-        <br />
+        
         <select multiple="multiple" name="tags" id="tags" class="form-control">
             @foreach (var item in Model.Tags)
             {
@@ -59,7 +59,7 @@
         <input type="hidden" name="Category.Cafe" value="false" />
         <br />
 
-        <button type="submit" class="RP_filterBtn">
+        <button type="submit" class="RP_Add">
             @if (Model.Category.Id == 0)
             {
                 <text>Submit</text>

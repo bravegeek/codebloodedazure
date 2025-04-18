@@ -44,39 +44,9 @@ namespace AttendanceDatabase.Controllers
             }
                 
         }
-        [HttpPost]
        
-        /*[HttpPost]
-        public IActionResult Delete(int id)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    // var accounts = _context.Accounts.ToList();
-                    var accountToBeDeleted = _context.Accounts.SingleOrDefault(c => c.Id == id);
-                    _context.Accounts.Remove(accountToBeDeleted);
-                    _context.SaveChanges();
-                    var accounts = _context.Accounts.ToList();
-                    return View("~/Views/Accounts/ManageAccounts.cshtml", accounts);
-                }
-
-                else
-                {
-
-                    TempData["ErrorMessage"] = "Please correct the errors and try again.";
-                    return View("~/Views/Accounts/ManageAccounts.cshtml");
-                }
-                
-                
-                
-            }
-            catch(Exception ex) {
-                TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
-                return View("~/Views/Accounts/ManageAccounts.cshtml");
-            }
-            
-        }*/
+       
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
 

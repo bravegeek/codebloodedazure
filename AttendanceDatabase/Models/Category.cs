@@ -5,7 +5,7 @@ namespace AttendanceDatabase.Models
 	public class Category
 	{
 		public int Id { get; set; }
-        [Required(ErrorMessage = "Category name is required.")]
+        [Required(ErrorMessage = "Please enter a category name.")]
         public string Name { get; set; }
         public DateTime Date { get; set; }
         public DateTime Time { get; set; }

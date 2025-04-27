@@ -27,19 +27,19 @@
                 <button type="submit" class="RP_indexBtns" asp-controller="DataEntry" asp-action="EnterDate">Enter Attendance</button>
                 <button type="submit" class="RP_indexBtns" asp-controller="DataEntry" asp-action="FlaggedData">View Flagged Data</button>
                 <button type="submit" class="RP_indexBtns" asp-controller="Form" asp-action="ViewPastCategories">Generate Report</button>
-                <<button type="submit" class="RP_indexBtns" asp-controller="Login" asp-action="LogOut">Log Out</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="Login" asp-action="LogOut">Log Out</button>
             </form>
         </div>
 
         <div class="right-div">
-            <button type="submit" class="logOutBtn" asp-controller="Login" asp-action="LogOut">Log Out</button>
+            <button type="submit" class="logOutBtn" onclick="location.href='@Url.Action("LogOut", "Login")'">Log Out</button>
             <br />
             
 
             <button class="btn1" onclick="location.href='@Url.Action("ManageAccounts", "Account")'"
                     style="background-image: url('@Url.Content("~/imgs/staff-background.png")');">
-                <h1>Manage Accounts</h1>
-                <p class="text-end">Manage Staff &rarr;</p>
+                <h1>@ViewBag.AccountCount Accounts</h1>
+                <p class="text-end">Manage Accounts &rarr;</p>
             </button>
 
             <button class="btn2" onclick="location.href='@Url.Action("ViewTags", "ManageTags")'"

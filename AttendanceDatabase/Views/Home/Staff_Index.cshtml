@@ -34,7 +34,7 @@
         </div>
 
         <div class="right-div">
-            <button type="submit" class="logOutBtn" asp-controller="Login" asp-action="LogOut">Log Out</button>
+            <button type="submit" class="logOutBtn" onclick="location.href='@Url.Action("LogOut", "Login")'">Log Out</button>
             <br />
             <button class="btn3" style="background-image: url('@Url.Content("~/imgs/event-background.png")');"
                     onclick="location.href='@Url.Action("ViewCategories", "ManageCategories")'">

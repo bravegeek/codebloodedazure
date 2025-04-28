@@ -80,9 +80,7 @@ namespace AttendanceDatabase.Controllers
 
 
         [HttpPost]
-       
-        /*[HttpPost]
-        public IActionResult Delete(int id)
+        public IActionResult Create(Account account)
         {
             if (HttpContext.Session.GetString("_Role") == "Admin")
             {

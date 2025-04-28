@@ -3,17 +3,27 @@
 @{
     ViewData["Title"] = "ManageAccounts";
 }
-
-<h1>ManageAccounts</h1>
+<!DOCTYPE html>
+<html>
+    <head>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+</head>
+    <body>
+        <h1>Manage Accounts</h1>
 
 <p>
-    <form asp-controller="Account" asp-action="Create">
-        <input type="submit" class="btn btn-primary" value="Create New">
-    </form>
+    
+        <form  asp-controller="Account" asp-action="Create">
+            <button type="submit" class="RP_AddNew"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+        </form>
 </p>
 
 @if (Model != null && Model.Any())
 {
+    <body class="RP_ViewForm">
+        <div>
     <table class="table">
         <thead>
             <tr>
@@ -33,35 +43,97 @@
                     <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
                     <td>@Html.DisplayFor(modelItem => item.role)</td>
                     <td>
-                        <form asp-action="Edit" asp-controller="Account" asp-route-itemid="@item.Id" method="post">
-                            <input type="submit" class="btn btn-primary" value="Edit">
-                        </form>
-                        @*<a href="javascript:void(0);" onclick="confirmDelete()">Delete</a>
-                        <form id="delete-form-@item.Id" asp-controller="Account" asp-action="Delete" method="post">
-                         <input type="submit" name="id" value="@item.Id">
-                            </form>*@
-                        @*<form method="post" asp-action="Delete">
-                            <input asp-for=@item.Id hidden />
-                            <input type="submit" class="btn btn-danger" value="Delete" />
-                        </form>*@
-                        <form asp-action="Delete" asp-controller="Account" asp-route-itemid="@item.Id" method="post">
-                            <button type="submit" class="btn btn-danger"
-                            onclick="return confirm('Are you sure you want to delete account: @item.Username')">
-                                Delete
-                            </button>
-                        </form>
-                    
-                          
-                       
-                    </td>
+                                    <div style="display: flex; gap: 10px;">
+                                        <form asp-action="Edit" asp-controller="Account" asp-route-itemid="@item.Id" method="post" style="margin: 0;">
+                                            <input type="submit" class="Blue_Btn" value="Edit">
+                                        </form>
+
+                                        <form asp-action="Delete" asp-controller="Account" asp-route-itemid="@item.Id" method="post" style="margin: 0;">
+                                            <button type="submit" class="Red_Btn"
+                                            onclick="return confirm('Are you sure you want to delete account: @item.Username')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </td>
                 </tr>
             }
         </tbody>
     </table>
+                <div id="pagination-controls" class="text-center"></div>
+            </div>
+            <script>
+                const rowsPerPage = 10;
+                let currentPage = 1;
+
+                function paginateTable() {
+                    const table = document.querySelector(".table tbody");
+                    const rows = table.querySelectorAll("tr");
+                    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                    rows.forEach((row, index) => {
+                        row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? "" : "none";
+                    });
+
+                    renderPaginationControls(totalPages);
+                }
+
+                function renderPaginationControls(totalPages) {
+                    const pagination = document.getElementById("pagination-controls");
+                    pagination.innerHTML = "";
+
+                    const createButton = (pageNum, isCurrent = false) => {
+                        const btn = document.createElement("button");
+                        btn.innerText = pageNum;
+                        btn.classList.add("btn", "btn-light", "mx-1");
+                        if (isCurrent) btn.classList.add("btn-primary");
+
+                        btn.addEventListener("click", () => {
+                            currentPage = pageNum;
+                            paginateTable();
+                        });
+
+                        return btn;
+                    };
+
+                    const addEllipsis = () => {
+                        const span = document.createElement("span");
+                        span.innerText = "...";
+                        span.classList.add("mx-2");
+                        pagination.appendChild(span);
+                    };
+
+                    for (let i = 1; i <= totalPages; i++) {
+                        if (
+                            i === 1 || // always show first page
+                            i === totalPages || // always show last page
+                            (i >= currentPage - 1 && i <= currentPage + 1) // current, one before, one after
+                        ) {
+                            pagination.appendChild(createButton(i, i === currentPage));
+                        } else if (
+                            i === 2 && currentPage > 4 || // early ellipsis
+                            i === totalPages - 1 && currentPage < totalPages - 3 || // late ellipsis
+                            (i === currentPage - 2 || i === currentPage + 2)
+                        ) {
+                            addEllipsis();
+                        }
+                    }
+                }
+
+
+                // Call the function once the page is loaded
+                window.addEventListener("DOMContentLoaded", paginateTable);
+            </script>
+    </body>
     
 }
 else
 {
     <p>No accounts available.</p>
 }
-<a asp-action="Admin_Index" asp-controller="Home">Back to Menu</a>
+    </body>
+</html>
+
+
+

@@ -8,12 +8,12 @@
 <head>
 </head>
 <body class="RP_CreateForm">
-    <h1 class="text-center">Enter Category Information</h1>
+    <h1 class="text-center">Enter Tag Information</h1>
 
-    <form asp-action="RP_AddTags" method="post">
+    <form asp-action="AddTags" method="post">
         <input type="hidden" asp-for="Id" />
-        <label id="tagName" name="tagName">Category Name:</label>
-        <input type="text" asp-for="Name" />
+        <label id="tagName" name="tagName">Tag Name:</label>
+        <input type="text" asp-for="Name" required />
         <br />
         <button type="submit" class="RP_Add">Add</button>
     </form>

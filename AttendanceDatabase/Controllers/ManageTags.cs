@@ -32,34 +32,37 @@ public class ManageTagsController : Controller
     [HttpPost]
     public IActionResult AddTags(Tags model)
     {
-        if (HttpContext.Session.GetString("_Role") == "Admin")
-        {
-            if (model.Id == 0)
-            {
-                // New tag
-                _context.Tags.Add(model);
-            }
-            else
-            {
-                // Editing existing tag
-                var tagInDb = _context.Tags.SingleOrDefault(t => t.Id == model.Id);
-                if (tagInDb == null)
-                {
-                    return NotFound();
-                }
-                tagInDb.Name = model.Name;
-                _context.Tags.Update(tagInDb);
-            }
-
-            _context.SaveChanges();
-            return RedirectToAction("ViewTags");
-        }
-        else
+        if (HttpContext.Session.GetString("_Role") != "Admin")
         {
             return NotFound();
         }
-            
+
+        if (model == null || string.IsNullOrWhiteSpace(model.Name))
+        {
+            return View("CreateTags", model);
+        }
+
+        if (model.Id == 0)
+        {
+            // New tag
+            _context.Tags.Add(model);
+        }
+        else
+        {
+            // Editing existing tag
+            var tagInDb = _context.Tags.SingleOrDefault(t => t.Id == model.Id);
+            if (tagInDb == null)
+            {
+                return NotFound();
+            }
+            tagInDb.Name = model.Name;
+            _context.Tags.Update(tagInDb);
+        }
+
+        _context.SaveChanges();
+        return RedirectToAction("ViewTags");
     }
+
 
 
     public IActionResult ViewTags()
@@ -121,6 +124,13 @@ public class ManageTagsController : Controller
         }
             
     }
+
+    public IActionResult Staff_ViewTags()
+    {
+        var tagList = _context.Tags.ToList();
+        return View(tagList);
+    }
+
 
 
 }

@@ -24,7 +24,10 @@
     var currentYear = DateTime.Now.Year;
 }
 
-<h2>Select a Date</h2>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<h2 class="text-center">Select a Date</h2>
 
 <div class="calendar-container">
     <div class="calendar-header">
@@ -43,7 +46,7 @@
 
 <form asp-action="DataEntry" method="post">
     <input type="hidden" name="date" id="selectedDate" value="@todayDate" />
-    <button type="submit" class="RP_filterBtn">Enter Date</button>
+    <button type="submit" class="CalendarEnter">Enter Date</button>
 </form>
 
 <script>

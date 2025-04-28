@@ -28,9 +28,13 @@ public class FormController : Controller
         {
             return RedirectToAction("Admin_Index", "Home");
         }
-        else
+        else if(HttpContext.Session.GetString("_Role") == "Staff")
         {
             return RedirectToAction("Staff_Index", "Home");
+        }
+        else
+        {
+            return RedirectToAction("Login", "Login");
         }
     }
 

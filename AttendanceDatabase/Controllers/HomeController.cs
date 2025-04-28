@@ -23,6 +23,7 @@ public class HomeController : Controller
         {
             var categoryTagCount = _context.Tags.Count();
             var categoryEventCount = _context.Categories.Count();
+            var accountCount = _context.Accounts.Count();
 
             ViewBag.username = HttpContext.Session.GetString("_Name");
 
@@ -30,6 +31,7 @@ public class HomeController : Controller
 
             ViewBag.CategoryTagCount = categoryTagCount;
             ViewBag.CategoryEventCount = categoryEventCount;
+            ViewBag.AccountCount = accountCount;
 
             ViewData["HideNavbar"] = true;
 

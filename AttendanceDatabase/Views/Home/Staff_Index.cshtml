@@ -2,7 +2,7 @@
 
 <html lang="en" id="indexHtml">
 <head>
-    <h1>Welcome @ViewBag.username</h1>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -16,21 +16,25 @@
             <div class="logo">
                 <img src="/imgs/MOCA-Logo.png" height="150" width="200" />
             </div>
+            <div>
+                Welcome @ViewBag.username
+            </div>
 
 
             <form>
                 <button type="submit" class="RP_indexBtns" asp-controller="ManageCategories" asp-action="CreateCategory">Create Category</button>
                 <button type="submit" class="RP_indexBtns" asp-controller="ManageCategories" asp-action="ViewCategories">View Categories</button>
-                <button type="submit" class="RP_indexBtns" asp-controller="DataEntry" asp-action="EnterDate">Enter Daily Attendance</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="ManageTags" asp-action="Staff_ViewTags">View Tags</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="DataEntry" asp-action="EnterDate">Enter Attendance</button>
                 <button type="submit" class="RP_indexBtns" asp-controller="DataEntry" asp-action="FlaggedData">View Flagged Data</button>
                 <button type="submit" class="RP_indexBtns" asp-controller="Form" asp-action="ViewPastCategories">Generate Report</button>
-                <button type="submit class="RP_indexBtns" asp-controller="Login" asp-action="LogOut">Log Out</button>
-                <button type="button" class="RP_indexBtns">Log Out</button>
+                <button type="submit" class="RP_indexBtns" asp-controller="Login" asp-action="LogOut">Log Out</button>
+                
             </form>
         </div>
 
         <div class="right-div">
-@*             <input type="button" value="Log Out" class="logOutBtn" /> *@
+            <button type="submit" class="logOutBtn" onclick="location.href='@Url.Action("LogOut", "Login")'">Log Out</button>
             <br />
             <button class="btn3" style="background-image: url('@Url.Content("~/imgs/event-background.png")');"
                     onclick="location.href='@Url.Action("ViewCategories", "ManageCategories")'">

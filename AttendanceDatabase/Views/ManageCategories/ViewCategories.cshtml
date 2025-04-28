@@ -15,7 +15,7 @@
     <div>
 
         <form>
-            <button type="submit" class="RP_AddNew" asp-controller="Form" asp-action="CreateCategory"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+            <button type="submit" class="RP_AddNew" asp-controller="ManageCategories" asp-action="CreateCategory"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
         </form>
         <br />
 
@@ -35,7 +35,7 @@
                     {
                         <tr>
                             <td>@Model[i].Name</td>
-                            <td>@Model[i].Date</td>
+                            <td>@Model[i].Date.ToString("MM/dd/yyyy")</td>
                             <td>
                                 @if (Model[i].Tags != null && Model[i].Tags.Any())
                                 {
@@ -61,8 +61,73 @@
                 }
             </tbody>
         </table>
+        <div id="pagination-controls" class="text-center"></div>
     </div>
+    <script>
+        const rowsPerPage = 10;
+        let currentPage = 1;
+
+        function paginateTable() {
+            const table = document.querySelector(".table tbody");
+            const rows = table.querySelectorAll("tr");
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            rows.forEach((row, index) => {
+                row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? "" : "none";
+            });
+
+            renderPaginationControls(totalPages);
+        }
+
+        function renderPaginationControls(totalPages) {
+            const pagination = document.getElementById("pagination-controls");
+            pagination.innerHTML = "";
+
+            const createButton = (pageNum, isCurrent = false) => {
+                const btn = document.createElement("button");
+                btn.innerText = pageNum;
+                btn.classList.add("btn", "btn-light", "mx-1");
+                if (isCurrent) btn.classList.add("btn-primary");
+
+                btn.addEventListener("click", () => {
+                    currentPage = pageNum;
+                    paginateTable();
+                });
+
+                return btn;
+            };
+
+            const addEllipsis = () => {
+                const span = document.createElement("span");
+                span.innerText = "...";
+                span.classList.add("mx-2");
+                pagination.appendChild(span);
+            };
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (
+                    i === 1 || // always show first page
+                    i === totalPages || // always show last page
+                    (i >= currentPage - 1 && i <= currentPage + 1) // current, one before, one after
+                ) {
+                    pagination.appendChild(createButton(i, i === currentPage));
+                } else if (
+                    i === 2 && currentPage > 4 || // early ellipsis
+                    i === totalPages - 1 && currentPage < totalPages - 3 || // late ellipsis
+                    (i === currentPage - 2 || i === currentPage + 2)
+                ) {
+                    addEllipsis();
+                }
+            }
+        }
+
+
+        // Call the function once the page is loaded
+        window.addEventListener("DOMContentLoaded", paginateTable);
+    </script>
+
 </body>
 </html>
+
 
 

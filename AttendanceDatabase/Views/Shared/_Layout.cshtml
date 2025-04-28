@@ -12,16 +12,25 @@
 <body>
     <header>
         @if (ViewData["HideNavbar"] == null || (bool)ViewData["HideNavbar"] == false)
+
         {
-            <nav class="navbar navbar-expand-sm mb-3">
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3" style="background-color: #005157;">
+
                 <div class="container-fluid">
                     <div class="navbar-collapse collapse d-sm-inline-flex ms-auto">
-                        <a class="navbar-brand" asp-controller="Form" asp-action="RP_Index"><img src="/imgs/MOCA-Logo.png" height="70" width="120" /></a>
-                        <button class="icons" onclick="location.href='@Url.Action("RP_Index", "Form")'"><span class="material-symbols-outlined">home</span> </button>
+                        <a class="navbar-brand"><img src="/imgs/MOCA-Logo.png" height="70" width="120"/></a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                            <button class="icons" onclick="location.href='@Url.Action("RP_Index", "Form")'"><span class="material-symbols-outlined">home</span> </button>
+                        </div>
                     </div>
                 </div>
             </nav>
         }
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -31,6 +40,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.9/jquery.validate.unobtrusive.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

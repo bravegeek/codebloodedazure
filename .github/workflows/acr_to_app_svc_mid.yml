@@ -5,7 +5,7 @@ name: Build to ACR, deploy to App Service using OIDC
 on:
   push:
     branches:
-      - "AttendanceDatabaseMOCA"
+      - "feature/improve-workflow"
 
 permissions:
     id-token: write # Require write permission to Fetch an OIDC token.

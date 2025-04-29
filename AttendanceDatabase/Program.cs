@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 // Configure DbContext with SQL Server using the connection string from appsettings.json
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING")));
 
 builder.Services.AddDistributedMemoryCache();
 

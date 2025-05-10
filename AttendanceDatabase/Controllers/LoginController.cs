@@ -26,6 +26,7 @@ namespace AttendanceDatabase.Controllers
                 var accounts = _context?.Accounts.ToList();
                 if (ModelState.IsValid)
                 {
+                    
                     Account? validAccount = accounts.Find(x => x.Username == Username && x.Password == Password);
                     if (validAccount != null)
                     {
